@@ -1,0 +1,2 @@
+# FiguraAvatarsReadmeTemplate
+私のFiguraアバターのREADMEに含まれる共通の文章をテンプレート化するレポジトリ
