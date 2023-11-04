@@ -39,3 +39,14 @@ READMEを生成する対象のブランチ名
 このレポジトリのテンプレートが変更された時（`push`）に対象のFiguraレポジトリに対してワークフローを実行させます（`repository_dispatch`）。
 
 レポジトリ変数の`TARGET_REPOSITORIES`に呼び出し対象のレポジトリ名が配列で定義されています。また、レポジトリシークレットの`DISPATCH_TOKEN`にこのワークフローを実行する為のPersonal Access Tokenが定義されています。
+
+## アバターを新規作成した後にやること
+1. アバターのレポジトリに`.github`を作成する。
+2. `.github/README_templates`に`ja.md`（日本語版README）と`en.md`（英語版README）を作成する。これらのファイルにREADMEを記述する。[テンプレートの挿入方法](#テンプレートの挿入方法)も参照する。
+3. `.github/workflows`に`generate_readme.yaml`と`dispatch_readme.yaml`を追加する。これらのファイルは既存のアバターのレポジトリからコピーする。
+4. レポジトリの変数に`TARGET_BRANCHES`という名前でREADMEを生成する対象のブランチの配列を定義する（例：`["Senko", "Shiro", "Suzu"]`）。
+5. このレポジトリの変数`TARGET_REPOSITORIES`に新規アバターのレポジトリを追加する。
+
+## アバターのブランチを増やした後にやること
+1. 増やしたアバターのブランチにも`.github`の中身を追加する。
+2. レポジトリの変数`TARGET_BRANCHES`に増やしたアバターのブランチを追加する。
