@@ -49,4 +49,5 @@ READMEを生成する対象のブランチ名
 
 ## アバターのブランチを増やした後にやること
 1. 増やしたアバターのブランチにも`.github`の中身を追加する。
-2. レポジトリの変数`TARGET_BRANCHES`に増やしたアバターのブランチを追加する。
+2. `.github/workflows/generate_readme.yaml`の`on`->`push`->`branches`に増やしたアバターのブランチを追加する。
+3. このレポジトリの変数`TARGET_BRANCHES`に増やしたアバターのブランチを追加する。
