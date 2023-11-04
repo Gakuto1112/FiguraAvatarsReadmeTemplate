@@ -19,7 +19,7 @@ jobs:
     steps:
       - name: Call dispatcher
         run: |
-          curl https://api.github.com/repos/Gakuro1112/${{ matrix.target-repository }}/dispatches \
+          curl https://api.github.com/repos/Gakuto1112/${{ matrix.target-repository }}/dispatches \
           -X POST \
           -H 'Accept: application/vnd.github+json' \
           -H 'Authorization: Bearer ${{ secrets.DISPATCH_TOKEN }}' \
