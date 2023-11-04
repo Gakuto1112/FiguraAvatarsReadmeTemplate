@@ -3,7 +3,7 @@
  * @param message 表示するメッセージ
  */
 export function warn(message: string): void {
-    console.warn(`Warn: ${message}`);
+    console.warn(`Warning: ${message}`);
 }
 
 /**

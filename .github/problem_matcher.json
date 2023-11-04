@@ -1,0 +1,14 @@
+{
+    "problemMatcher": [
+        {
+            "owner": "readme-generator-annotations",
+            "pattern": [
+                {
+                    "regexp": "^(Error|Warning):\\s(.+)$",
+                    "severity": 1,
+                    "message": 2
+                }
+            ]
+        }
+    ]
+}
