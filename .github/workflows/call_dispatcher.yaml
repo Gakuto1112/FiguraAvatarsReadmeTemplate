@@ -1,0 +1,26 @@
+name: Call dispatcher
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - templates/**
+      - src/**
+      - .github/workflows/call_dispatcher.yaml
+
+jobs:
+  call:
+    name: Call dispatchers
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        target-repository: ${{ fromJSON(vars.TARGET_REPOSITORIES) }}
+    steps:
+      - name: Call dispatcher
+        run: |
+          curl https://api.github.com/repos/Gakuro1112/${{ matrix.target-repository }}/dispatches \
+          -X POST \
+          -H 'Accept: application/vnd.github+json' \
+          -H 'Authorization: Bearer ${{ secrets.DISPATCH_TOKEN }}' \
+          -d '{"event_type": "dispatch_readme"}'
