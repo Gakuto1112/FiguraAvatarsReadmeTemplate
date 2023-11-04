@@ -36,6 +36,9 @@ jobs:
       - name: Install script dependencies
         working-directory: ./generator
         run: npm install
+      - name: Enable problem matcher
+        working-directory: ./generator/.github
+        run: echo '::add-matcher::problem_matcher.json'
       - name: Generate README
         working-directory: ./generator
         run: ./node_modules/.bin/ts-node ./readme_generator.ts ../avatar/.github ${{ inputs.repository-name }}
