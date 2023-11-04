@@ -3,9 +3,6 @@ name: Generate my Figura avatar README
 on:
   workflow_call:
     inputs:
-      repository-name:
-        required: true
-        type: string
       branch-name:
         required: true
         type: string
@@ -41,7 +38,7 @@ jobs:
         run: echo '::add-matcher::problem_matcher.json'
       - name: Generate README
         working-directory: ./generator
-        run: ./node_modules/.bin/ts-node ./readme_generator.ts ../avatar/.github ${{ inputs.repository-name }}
+        run: ./node_modules/.bin/ts-node ./readme_generator.ts ../avatar/.github ${{ github.repository }}
       - id: check_diff
         name: Check diff
         working-directory: ./avatar
