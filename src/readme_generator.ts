@@ -54,7 +54,7 @@ class ReadmeGenerator {
                         let text: string = fs.readFileSync(`./templates/${injectTag[1]}/${fileName}.md`, {encoding: "utf-8"});
                         if(injectTag[1] == "notes") {
                             //プレースホルダの置き換え
-                            text = text.replace("<!-- $REPOSITORY_NAME -->", this.REPOSITORY_NAME);
+                            text = text.replace(/<!--\s\$REPOSITORY_NAME\s-->/g, this.REPOSITORY_NAME);
                         }
                         writeStream.write(text);
                         this.caches[`${injectTag[1]}_${fileName}`] = text;
