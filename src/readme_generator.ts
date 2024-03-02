@@ -4,9 +4,14 @@ import { error, warn } from "./logger";
 
 class ReadmeGenerator {
     /**
-     * 対象のレポジトリの名前
+     * 対象のレポジトリ名
      */
     private readonly REPOSITORY_NAME: string;
+
+    /**
+     * 対象のブランチ名
+     */
+    private readonly BRANCH_NAME: string;
 
     /**
      * fetchして入手したマークダウンのキャッシュ
@@ -15,9 +20,12 @@ class ReadmeGenerator {
 
     /**
      * コンストラクタ
+     * @param repositoryName 対象のレポジトリ名
+     * @param branchName 対象のブランチ名
      */
-    constructor(repositoryName: string) {
+    constructor(repositoryName: string, branchName: string) {
         this.REPOSITORY_NAME = repositoryName;
+        this.BRANCH_NAME = branchName;
     }
 
     /**
@@ -52,10 +60,9 @@ class ReadmeGenerator {
                     }
                     else {
                         let text: string = fs.readFileSync(`./templates/${injectTag[1]}/${fileName}.md`, {encoding: "utf-8"});
-                        if(injectTag[1] == "notes") {
-                            //プレースホルダの置き換え
-                            text = text.replace(/<!--\s\$REPOSITORY_NAME\s-->/g, this.REPOSITORY_NAME);
-                        }
+                        //プレースホルダの置き換え
+                        text = text.replace(/<!--\s\$REPOSITORY_NAME\s-->/g, this.REPOSITORY_NAME);
+                        text = text.replace(/<!--\s\$BRANCH_NAME\s-->/g, this.BRANCH_NAME);
                         writeStream.write(text);
                         this.caches[`${injectTag[1]}_${fileName}`] = text;
                     }
@@ -104,8 +111,16 @@ async function main(): Promise<void> {
         }
     }
 
+    //2. ブランチ名
+    if(checkArgs(2, "branch name")) {
+        if(!/^[\w\-]+$/i.test(process.argv[4])) {
+            error(`"${process.argv[3]}" was specified as the branch name, but it is invalid.`);
+            errorFound = true;
+        }
+    }
+
     if(!errorFound) {
-        const readmeGenerator: ReadmeGenerator = new ReadmeGenerator(process.argv[3]);
+        const readmeGenerator: ReadmeGenerator = new ReadmeGenerator(process.argv[3], process.argv[4]);
         console.info("Generating README.md...");
         await readmeGenerator.generateReadme(`${process.argv[2]}/README_templates/en.md`, `${process.argv[2]}/README.md`);
         console.info("Generating README_jp.md...");
