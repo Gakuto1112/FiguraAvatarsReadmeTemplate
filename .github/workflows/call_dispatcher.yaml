@@ -7,7 +7,7 @@ on:
     paths:
       - templates/**
       - src/**
-      - .github/workflows/call_dispatcher.yaml
+      - .github/workflows/**
 
 jobs:
   call:
