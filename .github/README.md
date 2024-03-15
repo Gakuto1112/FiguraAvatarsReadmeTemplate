@@ -21,7 +21,7 @@ READMEのテンプレートが変更されると、[Github Actions](https://gith
 | how_to_use | 使用方法の章 |
 | notes | 注意事項の章 |
 
-注意事項の章のテンプレートには、レポジトリ名が入るプレースホルダがありますが、ここには[Github Actions](https://github.co.jp/features/actions)によって実際の値が代入されます。
+各テンプレートには、レポジトリ名が入るプレースホルダ（`<!-- $REPOSITORY_NAME -->`）がありますが、ここには[Github Actions](https://github.co.jp/features/actions)によって実際の値が代入されます。
 
 ## ワークフローファイルについて
 `.github/workflows`に[Github Actions](https://github.co.jp/features/actions)ワークフローの定義ファイルがあります。
@@ -41,6 +41,7 @@ READMEを生成する対象のブランチ名
 レポジトリ変数の`TARGET_REPOSITORIES`に呼び出し対象のレポジトリ名が配列で定義されています。また、レポジトリシークレットの`DISPATCH_TOKEN`にこのワークフローを実行する為のPersonal Access Tokenが定義されています。
 
 ## アバターを新規作成した後にやること
+（改良されたワークフローでは手順4が不要となります。）
 1. アバターのレポジトリに`.github`を作成する。
 2. `.github/README_templates`に`ja.md`（日本語版README）と`en.md`（英語版README）を作成する。これらのファイルにREADMEを記述する。[テンプレートの挿入方法](#テンプレートの挿入方法)も参照する。
 3. `.github/workflows`に`generate_readme.yaml`と`dispatch_readme.yaml`を追加する。これらのファイルは既存のアバターのレポジトリからコピーする。
@@ -48,6 +49,7 @@ READMEを生成する対象のブランチ名
 5. このレポジトリの変数`TARGET_REPOSITORIES`に新規アバターのレポジトリを追加する。
 
 ## アバターのブランチを増やした後にやること
+（改良されたワークフローでは手順2及び3が不要となります。）
 1. 増やしたアバターのブランチにも`.github`の中身を追加する。
 2. `.github/workflows/generate_readme.yaml`の`on`->`push`->`branches`に増やしたアバターのブランチを追加する。
 3. このレポジトリの変数`TARGET_BRANCHES`に増やしたアバターのブランチを追加する。
