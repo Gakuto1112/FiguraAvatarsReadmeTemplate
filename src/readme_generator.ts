@@ -1,6 +1,5 @@
 import fs from "fs";
 import readline from "readline";
-import { warn } from "./logger";
 
 export class ReadmeGenerator {
     /**
@@ -31,14 +30,8 @@ export class ReadmeGenerator {
     protected onInjectTagFound(tagName: string, fileName: string): string {
         if(this.caches[`${tagName}_${fileName}`] != undefined) return this.caches[`${tagName}_${fileName}`];
         else {
-            if(!fs.existsSync(`./templates/${tagName}`)) {
-                warn(`Unknown inject tag "${tagName}". This inject tag was skipped.`);
-                return `<!-- ERROR: Unknown inject tag "${tagName}" -->`;
-            }
-            else if(!fs.existsSync(`./templates/${tagName}/${fileName}.md`)) {
-                warn(`"${tagName}/${fileName}.md" doesn't exist. This inject tag was skipped.`);
-                return `<!-- ERROR: "${tagName}/${fileName}.md" doesn't exist -->`;
-            }
+            if(!fs.existsSync(`./templates/${tagName}`)) return `<!-- ERROR: Unknown inject tag "${tagName}" -->`;
+            else if(!fs.existsSync(`./templates/${tagName}/${fileName}.md`)) return `<!-- ERROR: "${tagName}/${fileName}.md" doesn't exist -->`;
             else {
                 let text: string = fs.readFileSync(`./templates/${tagName}/${fileName}.md`, {encoding: "utf-8"});
                 //プレースホルダの置き換え
