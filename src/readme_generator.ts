@@ -2,16 +2,16 @@ import fs from "fs";
 import readline from "readline";
 import { warn } from "./logger";
 
-class ReadmeGenerator {
+export class ReadmeGenerator {
     /**
      * 対象のレポジトリ名
      */
-    private readonly REPOSITORY_NAME: string;
+    protected readonly REPOSITORY_NAME: string;
 
     /**
      * fetchして入手したマークダウンのキャッシュ
      */
-    private readonly caches: {[key: string]: string} = {};
+    protected readonly caches: {[key: string]: string} = {};
 
     /**
      * コンストラクタ
@@ -28,8 +28,7 @@ class ReadmeGenerator {
      * @param inputPath 入力するテンプレートのパス
      * @returns タグに置き換わる文字列。返された文字列がREADMEに挿入される。
      */
-    private onInjectTagFound(tagName: string, inputPath: string): string {
-        const fileName: string = (inputPath.match(/([^\\\/:*?"><|]+)\.md/) as RegExpMatchArray)[1];
+    protected onInjectTagFound(tagName: string, fileName: string): string {
         if(this.caches[`${tagName}_${fileName}`] != undefined) return this.caches[`${tagName}_${fileName}`];
         else {
             if(!fs.existsSync(`./templates/${tagName}`)) {
@@ -66,8 +65,8 @@ class ReadmeGenerator {
             let charCount: number = 0;
             for(const injectTag of injectTags) {
                 writeStream.write(line.substring(charCount, injectTag.index));
-                charCount += (injectTag.index as number) + injectTag[0].length;
-                writeStream.write(this.onInjectTagFound(injectTag[1], inputPath));
+                charCount += injectTag.index! + injectTag[0].length;
+                writeStream.write(this.onInjectTagFound(injectTag[1], inputPath.match(/([^\\\/:*?"><|]+)\.md/)![1]));
             }
             writeStream.write(`${line.substring(charCount)}\n`);
         }
