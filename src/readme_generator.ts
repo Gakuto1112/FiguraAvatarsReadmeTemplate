@@ -23,6 +23,34 @@ class ReadmeGenerator {
     }
 
     /**
+     * インジェクトタグ（<!--- $inject(<tag_name>) ->）が見つかった時に呼ばれる関数
+     * @param tagName タグの名前
+     * @param inputPath 入力するテンプレートのパス
+     * @returns タグに置き換わる文字列。返された文字列がREADMEに挿入される。
+     */
+    private onInjectTagFound(tagName: string, inputPath: string): string {
+        const fileName: string = (inputPath.match(/([^\\\/:*?"><|]+)\.md/) as RegExpMatchArray)[1];
+        if(this.caches[`${tagName}_${fileName}`] != undefined) return this.caches[`${tagName}_${fileName}`];
+        else {
+            if(!fs.existsSync(`./templates/${tagName}`)) {
+                warn(`Unknown inject tag "${tagName}". This inject tag was skipped.`);
+                return `<!-- ERROR: Unknown inject tag "${tagName}" -->`;
+            }
+            else if(!fs.existsSync(`./templates/${tagName}/${fileName}.md`)) {
+                warn(`"${tagName}/${fileName}.md" doesn't exist. This inject tag was skipped.`);
+                return `<!-- ERROR: "${tagName}/${fileName}.md" doesn't exist -->`;
+            }
+            else {
+                let text: string = fs.readFileSync(`./templates/${tagName}/${fileName}.md`, {encoding: "utf-8"});
+                //プレースホルダの置き換え
+                text = text.replace(/<!--\s\$REPOSITORY_NAME\s-->/g, this.REPOSITORY_NAME);
+                this.caches[`${tagName}_${fileName}`] = text;
+                return text;
+            }
+        }
+    }
+
+    /**
      * READMEをテンプレートから生成する。
      * @param inputPath 入力するテンプレートのパス
      * @param outputPath 生成するREADMEの出力先のパス
@@ -39,27 +67,7 @@ class ReadmeGenerator {
             for(const injectTag of injectTags) {
                 writeStream.write(line.substring(charCount, injectTag.index));
                 charCount += (injectTag.index as number) + injectTag[0].length;
-                const fileName: string = (inputPath.match(/([^\\\/:*?"><|]+)\.md/) as RegExpMatchArray)[1];
-                if(this.caches[`${injectTag[1]}_${fileName}`] != undefined) writeStream.write(this.caches[`${injectTag[1]}_${fileName}`]);
-                else {
-                    if(!fs.existsSync(`./templates/${injectTag[1]}`)) {
-                        warn(`Unknown inject tag "${injectTag[1]}". This inject tag was skipped.`);
-                        writeStream.write(`<!-- ERROR: Unknown inject tag "${injectTag[1]}" -->`);
-                        continue;
-                    }
-                    else if(!fs.existsSync(`./templates/${injectTag[1]}/${fileName}.md`)) {
-                        warn(`"${injectTag[1]}/${fileName}.md" doesn't exist. This inject tag was skipped.`);
-                        writeStream.write(`<!-- ERROR: "${injectTag[1]}/${fileName}.md" doesn't exist -->`);
-                        continue;
-                    }
-                    else {
-                        let text: string = fs.readFileSync(`./templates/${injectTag[1]}/${fileName}.md`, {encoding: "utf-8"});
-                        //プレースホルダの置き換え
-                        text = text.replace(/<!--\s\$REPOSITORY_NAME\s-->/g, this.REPOSITORY_NAME);
-                        writeStream.write(text);
-                        this.caches[`${injectTag[1]}_${fileName}`] = text;
-                    }
-                }
+                writeStream.write(this.onInjectTagFound(injectTag[1], inputPath));
             }
             writeStream.write(`${line.substring(charCount)}\n`);
         }
