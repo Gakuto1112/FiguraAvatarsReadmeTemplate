@@ -1,11 +1,24 @@
 import fs from "fs";
 import readline from "readline";
 
+/**
+ * READMEドキュメントの言語を示す列挙型
+ */
+export type FileLanguage = "en" | "jp";
+
+/**
+ * READMEの生成クラス
+ */
 export class ReadmeGenerator {
     /**
      * 対象のレポジトリ名
      */
-    protected readonly REPOSITORY_NAME: string;
+    protected readonly RepositoryName: string;
+
+    /**
+     * テンプレートレポジトリまでのルートパス
+     */
+    private readonly rootPath: string;
 
     /**
      * fetchして入手したマークダウンのキャッシュ
@@ -15,28 +28,29 @@ export class ReadmeGenerator {
     /**
      * コンストラクタ
      * @param repositoryName 対象のレポジトリ名
-     * @param branchName 対象のブランチ名
+     * @param rootPath テンプレートレポジトリまでのルートパス
      */
-    constructor(repositoryName: string) {
-        this.REPOSITORY_NAME = repositoryName;
+    constructor(repositoryName: string, rootPath: string) {
+        this.RepositoryName = repositoryName;
+        this.rootPath = rootPath
     }
 
     /**
      * インジェクトタグ（<!--- $inject(<tag_name>) ->）が見つかった時に呼ばれる関数
      * @param tagName タグの名前
-     * @param inputPath 入力するテンプレートのパス
+     * @param fileLanguage READMEドキュメントの言語
      * @returns タグに置き換わる文字列。返された文字列がREADMEに挿入される。
      */
-    protected onInjectTagFound(tagName: string, fileName: string): string {
-        if(this.caches[`${tagName}_${fileName}`] != undefined) return this.caches[`${tagName}_${fileName}`];
+    protected onInjectTagFound(tagName: string, fileLanguage: FileLanguage): string {
+        if(this.caches[`${tagName}_${fileLanguage}`] != undefined) return this.caches[`${tagName}_${fileLanguage}`];
         else {
-            if(!fs.existsSync(`./templates/${tagName}`)) return `<!-- ERROR: Unknown inject tag "${tagName}" -->`;
-            else if(!fs.existsSync(`./templates/${tagName}/${fileName}.md`)) return `<!-- ERROR: "${tagName}/${fileName}.md" doesn't exist -->`;
+            if(!fs.existsSync(`${this.rootPath}/templates/${tagName}`)) return `<!-- ERROR: Unknown inject tag "${tagName}" -->`;
+            else if(!fs.existsSync(`${this.rootPath}/templates/${tagName}/${fileLanguage}.md`)) return `<!-- ERROR: "${tagName}/${fileLanguage}.md" doesn't exist -->`;
             else {
-                let text: string = fs.readFileSync(`./templates/${tagName}/${fileName}.md`, {encoding: "utf-8"});
+                let text: string = fs.readFileSync(`${this.rootPath}/templates/${tagName}/${fileLanguage}.md`, {encoding: "utf-8"});
                 //プレースホルダの置き換え
-                text = text.replace(/<!--\s\$REPOSITORY_NAME\s-->/g, this.REPOSITORY_NAME);
-                this.caches[`${tagName}_${fileName}`] = text;
+                text = text.replace(/<!--\s\$REPOSITORY_NAME\s-->/g, this.RepositoryName);
+                this.caches[`${tagName}_${fileLanguage}`] = text;
                 return text;
             }
         }
@@ -59,7 +73,7 @@ export class ReadmeGenerator {
             for(const injectTag of injectTags) {
                 writeStream.write(line.substring(charCount, injectTag.index));
                 charCount += injectTag.index! + injectTag[0].length;
-                writeStream.write(this.onInjectTagFound(injectTag[1], inputPath.match(/([^\\\/:*?"><|]+)\.md/)![1]));
+                writeStream.write(this.onInjectTagFound(injectTag[1], inputPath.match(/([^\\\/:*?"><|]+)\.md/)![1] as FileLanguage));
             }
             writeStream.write(`${line.substring(charCount)}\n`);
         }
@@ -77,5 +91,5 @@ export class ReadmeGenerator {
 }
 
 if(require.main === module) {
-    new ReadmeGenerator(process.argv[3]).main();
+    new ReadmeGenerator(process.argv[3], ".").main();
 }
