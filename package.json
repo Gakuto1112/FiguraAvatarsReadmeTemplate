@@ -2,7 +2,6 @@
   "name": "@gakuto1112/readme-generator",
   "version": "1.0.0",
   "description": "A script to generate README for my Figura avatars from templates.",
-  "main": "generate_readme.js",
   "keywords": [
     "readme",
     "generate",
