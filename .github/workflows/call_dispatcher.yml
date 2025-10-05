@@ -2,8 +2,8 @@ name: Call dispatcher
 
 on:
   push:
-    branches:
-      - main
+    tags:
+      - v*
     paths:
       - templates/**
       - src/**
