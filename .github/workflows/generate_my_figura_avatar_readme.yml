@@ -35,7 +35,7 @@ jobs:
         run: npm install
       - name: Generate README
         working-directory: ./generator
-        run: ./node_modules/.bin/ts-node ./src/readme_generator.ts ../avatar/.github ${{ github.repository }}
+        run: ./node_modules/.bin/ts-node ./src/readme_generator.ts ../avatar/ ${{ github.repository }}
       - id: check_diff
         name: Check diff
         working-directory: ./avatar

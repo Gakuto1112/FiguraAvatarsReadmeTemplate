@@ -84,9 +84,9 @@ export class ReadmeGenerator {
      */
     public async main(): Promise<void> {
         console.info("Generating README.md...");
-        await this.generateReadme(`${process.argv[2]}/README_templates/en.md`, `${process.argv[2]}/README.md`);
+        await this.generateReadme(`${process.argv[2]}/.github/README_templates/en.md`, `${process.argv[2]}/README.md`);
         console.info("Generating README_jp.md...");
-        await this.generateReadme(`${process.argv[2]}/README_templates/jp.md`, `${process.argv[2]}/README_jp.md`);
+        await this.generateReadme(`${process.argv[2]}/.github/README_templates/jp.md`, `${process.argv[2]}/README_jp.md`);
     }
 }
 
