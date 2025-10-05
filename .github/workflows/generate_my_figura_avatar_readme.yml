@@ -24,7 +24,6 @@ jobs:
         with:
           path: ./generator
           repository: Gakuto1112/FiguraAvatarsReadmeTemplate
-          ref: v1.3.0
       - name: Setup Node.js@20.8.0
         uses: actions/setup-node@v5.0.0
         with:

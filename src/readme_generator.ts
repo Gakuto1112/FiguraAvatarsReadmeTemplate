@@ -65,7 +65,7 @@ export class ReadmeGenerator {
         const writeStream: fs.WriteStream = fs.createWriteStream(outputPath, {encoding: "utf-8"});
         for await (let line of readline.createInterface({input: fs.createReadStream(inputPath, {encoding: "utf-8"}), output: writeStream})) {
             //画像のソースファイルの置き換え
-            line = line.replace(/\.\.\/README_images\//g, "./README_images/");
+            line = line.replace(/\.\.\/README_images\//g, "./.github/README_images/");
 
             //テンプレートを挿入
             const injectTags: IterableIterator<RegExpMatchArray> = line.matchAll(/<!-- \$inject\(([^\\\/:*?"><|]+)\) -->/g);
